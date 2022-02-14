@@ -1,0 +1,15 @@
+.courses_wrapper {
+  margin-top: 7rem;
+  padding: 3rem;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.btn_block {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 10px;
+}

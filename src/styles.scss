@@ -1,0 +1,28 @@
+:root {
+  --primary-color: #0275d8;
+  --dark-color: #333333;
+  --light-color: #f4f4f4;
+  --danger-color: #d9534f;
+  --success-color: #5cb85c;
+  --warning-color: #f0ad4e;
+  --shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: var(--light-color);
+  color: --dark-color;
+}
+
+ul {
+  list-style: none;
+}
+

@@ -1,0 +1,18 @@
+<div class="courses_wrapper">
+  <app-course-card  *ngFor="let course of courses"
+    [title]="course.title"
+    [description]="course.description"
+    [duration]="course.duration"
+    [creationDate]="course.creationDate"
+    [authors]="course.authors"
+  >
+    <div class="btn_block">
+      <app-button [buttonText]="showButtonText" (click)="showCourse(course)"></app-button>
+      <ng-container *ngIf="isEdit">
+        <app-button [iconName]="iconEdit" (click)="editCourse(course)"></app-button>
+        <app-button [iconName]="iconDelete" (click)="deleteCourse(course)"></app-button>
+      </ng-container>
+    </div>
+  </app-course-card>
+</div>
+

@@ -1,0 +1,13 @@
+<div class="modal_wrapper" [class.open]="modalOpen">
+  <div class="modal_dialog">
+    <app-button class="modal_icon" [iconName]="closeIcon" (click)="deny()" [btnClass]="'btn__warning'"></app-button>
+    <div class="modal_message">
+      <h3>{{ title }}</h3>
+      <p>{{ message }}</p>
+    </div>
+    <div class="modal_buttons">
+      <app-button [buttonText]="'Ok'" (click)="allow()"></app-button>
+      <app-button [buttonText]="'Cancel'" (click)="deny()"></app-button>
+    </div>
+  </div>
+</div>

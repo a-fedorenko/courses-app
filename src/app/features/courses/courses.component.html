@@ -1,0 +1,29 @@
+<div class="container">
+  <app-header>
+    <strong class="username">{{ username }}</strong>
+    <app-button [buttonText]="logButtonText"></app-button>
+  </app-header>
+  <app-course-list *ngIf="courses.length; else info"
+    (delete)="openRemoveModal($event)"
+    (edit)="editCourse($event)"
+    (show)="showCourse($event)"
+    [courses]="courses"
+  ></app-course-list>
+</div>
+
+<ng-template #info>
+  <app-info
+    [title]="infoTitle"
+    [text]="infoText"
+  >
+    <app-button [buttonText]="addButtonText"></app-button>
+  </app-info>
+</ng-template>
+
+<app-modal
+  [modalOpen]="isConfirmModalOpen"
+  (confirm)="confirmRemoveCourse($event)"
+  [title]="modalTitle"
+  [message]="modalMessage"
+>
+</app-modal>

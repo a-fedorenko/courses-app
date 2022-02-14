@@ -1,0 +1,58 @@
+.btn {
+  display: inline-block;
+  color: var(--dark-color);
+  padding: 0.6rem 0.6rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in;
+  outline: none;
+
+  &:disabled {
+    cursor: not-allowed;
+    background: rgb(184, 184, 184);
+    color: var(--light-color);
+  }
+
+  &:hover {
+    box-shadow: var(--shadow);
+  }
+
+  &:focus {
+    background: var(--primary-color);
+    color: var(--light-color);
+  }
+
+  &:active {
+    background: var(--success-color);
+    color: var(--light-color);
+  }
+
+  &_success {
+    background: var(--success-color);
+    color: var(--light-color);
+  }
+
+  &_primary {
+    background: var(--primary-color);
+    color: var(--light-color);
+  }
+
+  &_danger {
+    background: var(--danger-color);
+    color: var(--light-color);
+  }
+
+  &_light {
+    background: var(--light-color);
+    color: var(--dark-color);
+  }
+
+  &_warning {
+    background: var(--warning-color);
+    color: var(--dark-color);
+  }
+
+}
+

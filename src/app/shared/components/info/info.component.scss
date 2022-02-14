@@ -1,0 +1,23 @@
+.info {
+
+  &_wrapper {
+    margin-top: 7rem;
+    padding: 3rem;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #fff;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  &_content {
+    margin: 0 auto;
+    width: 70%;
+  }
+
+  &_text {
+    font-size: 30px;
+    margin: 30px 0;
+  }
+
+}

@@ -1,0 +1,14 @@
+<div class="course_card">
+  <div class="content_left">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+  </div>
+  <div class="content_right">
+    <ul>
+      <li><strong>Autors:</strong> {{ authors }}</li>
+      <li><strong>Duration:</strong> {{ duration | myTime }}</li>
+      <li><strong>Created:</strong> {{ creationDate | date:'dd.MM.yyyy' }}</li>
+    </ul>
+    <ng-content></ng-content>
+  </div>
+</div>
