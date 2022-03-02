@@ -8,6 +8,8 @@ import { CoursesModule } from './features/courses/courses.module';
 import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {HttpClientModule} from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -16,12 +18,13 @@ import {HttpClientModule} from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LoginModule,
-    RegistrationModule,
+    FormsModule,
     CoursesModule,
     SharedModule,
     FontAwesomeModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    RegistrationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

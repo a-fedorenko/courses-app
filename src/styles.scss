@@ -1,3 +1,5 @@
+///@import './assets/scss/form-validate.scss';
+
 :root {
   --primary-color: #0275d8;
   --dark-color: #333333;
@@ -22,7 +24,95 @@ body {
   color: --dark-color;
 }
 
+.wrapper {
+  margin-top: 7rem;
+  padding: 3rem;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+}
+
 ul {
   list-style: none;
 }
+
+.flex_block {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+input,
+textarea {
+  font-family: 'Roboto', sans-serif;
+  display: block;
+  width: 92%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+//Auth
+.auth_block {
+  margin: 0 auto;
+  padding-top: 5rem;
+  width: 400px;
+}
+
+.form {
+  padding: 1.5rem;
+  border: #ccc 1px solid;
+  margin: 0.7rem 0;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &_title {
+    font-size: 20px;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  &_content {
+    margin-bottom: .5rem;
+  }
+
+  &_submit {
+    text-align: center;
+    width: 100%;
+  }
+
+}
+
+.register_link {
+  margin-top: 1rem;
+  font-size: 15px;
+}
+
+.form_submit .btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+//form-validation
+.invalid {
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+.invalid_text {
+  font-size: small;
+  color: var(--danger-color);
+}
+
+
 

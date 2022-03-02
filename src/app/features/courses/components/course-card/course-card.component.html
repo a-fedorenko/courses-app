@@ -6,8 +6,8 @@
   <div class="content_right">
     <ul>
       <li><strong>Autors:</strong> {{ authors }}</li>
-      <li><strong>Duration:</strong> {{ duration | myTime }}</li>
-      <li><strong>Created:</strong> {{ creationDate | date:'dd.MM.yyyy' }}</li>
+      <li><strong>Duration:</strong> {{ duration | duration }}</li>
+      <li><strong>Created:</strong> {{ creationDate | creationDate }}</li>
     </ul>
     <ng-content></ng-content>
   </div>

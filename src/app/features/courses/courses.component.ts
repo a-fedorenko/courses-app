@@ -1,15 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { mockedCourseList } from '../../../../modules_module-02_mocks.js';
-
-
-export interface Course {
-  id: string,
-  title: string,
-  description: string,
-  creationDate: Date,
-  duration:  number,
-  authors: string[]
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Course } from 'src/app/core/models/course-model.js';
+import { mockedCourseList } from '../../core/constans/modules_module-02_mocks.js';
 
 @Component({
   selector: 'app-courses',
@@ -18,10 +10,14 @@ export interface Course {
 })
 export class CoursesComponent implements OnInit {
 
+  courses$ = new BehaviorSubject<Course[]>(mockedCourseList);
   username: string;
-  courses: Course[];
   logButtonText: string;
   isConfirmModalOpen: boolean = false;
+  isCourseFormOpen: boolean = false;
+  isInfo: boolean = false;
+  isLogin: boolean = false;
+  isRegistration: boolean = false;
   selectedСourse: Course;
   addButtonText: string = 'Add new course';
   infoTitle: string = 'Your list is empty';
@@ -37,7 +33,13 @@ export class CoursesComponent implements OnInit {
   }
 
   removeCourse(): void {
-    this.courses = this.courses.filter(item => item.id !== this.selectedСourse.id);
+    const courses = this.courses$.getValue().filter(course => {
+      return course.id !== this.selectedСourse.id;
+    });
+    this.courses$.next(courses);
+    if(courses.length === 0) {
+      this.isInfo = true;
+    }
   }
 
   openRemoveModal(course: Course): void {
@@ -53,12 +55,53 @@ export class CoursesComponent implements OnInit {
     this.isConfirmModalOpen = false;
   }
 
-  editCourse(course: Course): void {}
+  editCourse(course: Course): void {
+    this.setSessionStorage(course.id);
+    this.isCourseFormOpen = true;
+  }
 
   showCourse(course: Course): void {}
 
-  private getCourses(): void {
-    this.courses = mockedCourseList.map(item => Object.assign({}, item));
+  addCourse(): void {
+    this.isInfo = false;
+    this.isCourseFormOpen = true;
+  }
+
+  submit(data: Course): void {
+    this.isCourseFormOpen = false;
+    this.saveCourse(data);
+  }
+
+  private saveCourse(data: Course): void {
+    const courses = this.courses$.getValue();
+    let find = courses.find(item => item.id === data.id);
+    if(find) {
+      this.courses$.next([
+        ...courses.map(item => {
+          if(item.id === data.id) {
+            return data;
+          } else {
+            return item;
+          }
+        })
+      ]);
+    } else {
+      this.courses$.next([
+        ...courses,
+        {
+          ...data,
+          id: courses[courses.length+1]+'1'
+        }
+      ]);
+    }
+  }
+
+  private setSessionStorage(id: string): void {
+    sessionStorage.setItem('id', id);
+  }
+
+  private getCourses(): Observable<Course[]> {
+    return this.courses$.asObservable();
   }
 
   private getUser(): void {
@@ -68,6 +111,10 @@ export class CoursesComponent implements OnInit {
 
   private login(): void {
     this.logButtonText = 'Logout';
+  }
+
+  logOut() {
+    this.isLogin = true;
   }
 
 }

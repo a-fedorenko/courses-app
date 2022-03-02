@@ -1,4 +1,4 @@
-<button type="button" class="btn" [class]="btnClass">
+<button type="button" class="btn" [ngClass]="btnClass" [type]="type" [disabled]="disabled">
   {{ buttonText }}
   <fa-icon *ngIf="iconName" class="btn_icon" [icon]="iconName"></fa-icon>
 </button>

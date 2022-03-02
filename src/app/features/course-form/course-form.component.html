@@ -1,0 +1,31 @@
+<form [formGroup]="courseForm" (submit)="submit()" class="course_form wrapper">
+  <label for="title">Title</label>
+  <div class="flex_block">
+    <input type="text" name="title" formControlName="title">
+    <app-button [buttonText]="'Save course'" [type]="'submit'" [disabled]="!courseForm.valid"></app-button>
+  </div>
+  <label for="description">Description</label>
+  <textarea type="text" rows="10" cols="45" name="description" formControlName="description"></textarea>
+  <div class="flex_block border">
+    <div class="authors_content">
+      <div>
+        <h3>Add authors</h3>
+        <label for="newAuthor">Author name</label>
+        <div class="flex_block">
+          <input type="text" name="newAuthor" formControlName="newAuthor" class="author_name">
+          <app-button [buttonText]="'Create author'" type="button" (click)="addAuthor()"></app-button>
+        </div>
+      </div>
+      <label for="duration">Duration</label>
+      <input type="text" name="duration" formControlName="duration" [(ngModel)] = "duration">
+      <span class="duration">Duration: {{ duration | duration }}</span>
+    </div>
+    <div formArrayName="authors" class="authors_content" *ngIf="authors">
+      <h3>Authors list</h3>
+      <div *ngFor="let author of authors.controls; let i = index" class="flex_block">
+        <input type="text" name="author" [placeholder]="author" [formControlName]="i" class="author_name">
+        <app-button [buttonText]="'Delete author'" (click)="removeAuthor(i)" type="button"></app-button>
+      </div>
+    </div>
+  </div>
+</form>

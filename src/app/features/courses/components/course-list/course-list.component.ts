@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faPen, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Course } from '../../courses.component';
+import { BehaviorSubject } from 'rxjs';
+import { Course } from 'src/app/core/models/course-model';
 
 @Component({
   selector: 'app-course-list',
@@ -13,7 +14,7 @@ export class CourseListComponent implements OnInit {
   iconDelete: unknown = faTrashAlt;
   showButtonText: string = 'Show course';
 
-  @Input() courses: Course[];
+  @Input() courses: BehaviorSubject<Course[]>;
   @Input() isEdit: boolean = true;
 
   @Output() edit: EventEmitter<Course> = new EventEmitter<Course>();

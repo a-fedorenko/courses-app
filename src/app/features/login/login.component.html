@@ -1,1 +1,53 @@
-<p>login works!</p>
+<div class="auth_block" *ngIf="isLogin">
+  <form class="form" #form="ngForm" (ngSubmit)="submit()">
+    <div class="form_content">
+      <span class="form_title">Login</span>
+      <div class="input_field">
+        <label for="email">Email</label>
+        <input class="input"
+          id="email"
+          type="email"
+          #email="ngModel"
+          [(ngModel)]="user.email"
+          required
+          [class.invalid]="email.invalid
+          && email.touched"
+        >
+        <span class="invalid_text"
+        *ngIf="email.errors?.['required']">
+          Email is required.
+        </span>
+      </div>
+      <div class="input_field">
+        <label for="password">Password</label>
+        <input class="input"
+          id="password"
+          type="password"
+          #password="ngModel"
+          [(ngModel)]="user.password"
+          required
+          [class.invalid]="password.invalid
+          && password.touched"
+        >
+      </div>
+    </div>
+    <div class="form_submit">
+      <app-button
+        [btnClass]="'btn_success'"
+        [buttonText]="'Login'"
+        [type]="'submit'"
+        [disabled]="!form.valid"
+      ></app-button>
+      <div class="register_link">
+        If You don't have an account You can <a href="#" (click)="goToRegistration()">Registration</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-registration
+  *ngIf="isRegistration"
+  [(isRegistration)]="isRegistration"
+  (isLogin)="goToLogin($event)"
+></app-registration>
+

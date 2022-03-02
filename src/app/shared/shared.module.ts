@@ -1,18 +1,38 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent, ButtonComponent, InfoComponent, ModalComponent } from './components/index';
+import {
+  HeaderComponent,
+  ButtonComponent,
+  InfoComponent,
+  ModalComponent,
+  SearchComponent,
+} from './components/index';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MyTimePipe } from './pipes/my-time.pipe';
+import { DurationPipe } from './pipes/duration.pipe';
+import { CreationDatePipe } from './pipes/creation-date.pipe';
+import { StringJoinerPipe } from './pipes/string-joiner.pipe';
+import { EmailValidatorDirective } from './validators/email-validator.directive';
 
 
-const COMPONENTS: any[] = [HeaderComponent, ButtonComponent, InfoComponent, ModalComponent];
-const PIPES: any[] = [MyTimePipe];
+const COMPONENTS: any[] = [
+  HeaderComponent,
+  ButtonComponent,
+  InfoComponent,
+  ModalComponent,
+  SearchComponent,
+];
+const PIPES: any[] = [
+  DurationPipe,
+  CreationDatePipe,
+  StringJoinerPipe
+];
 
 
 @NgModule({
   declarations: [
     ...COMPONENTS,
     ...PIPES,
+    EmailValidatorDirective,
   ],
   imports: [
     CommonModule,

@@ -1,1 +1,65 @@
-<p>registration works!</p>
+<div class="auth_block" *ngIf="isRegistration">
+  <form class="form" [formGroup]="registrationForm" (ngSubmit)="submit()">
+    <div class="form_content">
+      <span class="form_title">Registration</span>
+      <div class="input_field">
+        <label for="name">Name</label>
+        <input class="input"
+          id="name"
+          type="name"
+          formControlName="name"
+          [class.invalid]="registrationForm.controls['name'].invalid
+          && registrationForm.controls['name'].touched"
+        >
+        <span class="invalid_text"
+        *ngIf="registrationForm.controls['name'].errors?.['required']">
+          Name is required.
+        </span>
+      </div>
+      <div class="input_field">
+        <label for="email">Email</label>
+        <input class="input"
+          id="email"
+          type="email"
+          formControlName="email"
+          [class.invalid]="registrationForm.controls['email'].invalid
+          && registrationForm.controls['email'].touched"
+        >
+        <span class="invalid_text"
+        *ngIf="registrationForm.controls['email'].errors?.['required']">
+          Email is requaired.
+        </span>
+      </div>
+      <div class="input_field">
+        <label for="password">Password</label>
+        <input class="input"
+          id="password"
+          type="password"
+          formControlName="password"
+          [class.invalid]="registrationForm.controls['password'].invalid
+          && registrationForm.controls['password'].touched"
+        >
+        <span class="invalid_text"
+        *ngIf="registrationForm.controls['password'].errors?.['required']">
+          Password is requaired.
+        </span>
+        <span class="invalid_text"
+        *ngIf="registrationForm.controls['password'].errors?.['minlength']">
+          Password must be at least 6 characters long.
+        </span>
+      </div>
+    </div>
+    <div class="form_submit">
+      <app-button
+        [btnClass]="'btn_success'"
+        [buttonText]="'Registration'"
+        [type]="'submit'"
+        [disabled]="!registrationForm.valid"
+      ></app-button>
+      <div class="register_link">
+        If You have an account You can <a href="#" (click)="goToLogin()">Login</a>
+      </div>
+    </div>
+  </form>
+</div>
+

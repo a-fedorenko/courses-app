@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'myTime'
+  name: 'duration'
 })
-export class MyTimePipe implements PipeTransform {
+export class DurationPipe implements PipeTransform {
 
   transform(value: number): any {
     if (value/60 > 1 && value/60 < 10) {

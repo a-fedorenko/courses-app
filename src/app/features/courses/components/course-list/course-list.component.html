@@ -1,5 +1,6 @@
-<div class="courses_wrapper">
-  <app-course-card  *ngFor="let course of courses"
+<div class="wrapper">
+  <ng-content></ng-content>
+  <app-course-card  *ngFor="let course of courses | async"
     [title]="course.title"
     [description]="course.description"
     [duration]="course.duration"

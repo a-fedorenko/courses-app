@@ -1,24 +1,30 @@
-<div class="container">
+<div class="container" *ngIf="!isLogin && !isRegistration">
   <app-header>
     <strong class="username">{{ username }}</strong>
-    <app-button [buttonText]="logButtonText"></app-button>
+    <app-button [buttonText]="logButtonText" [type]="'button'" (click)="logOut()"></app-button>
   </app-header>
-  <app-course-list *ngIf="courses.length; else info"
+
+  <app-course-list *ngIf="!isInfo && !isCourseFormOpen"
     (delete)="openRemoveModal($event)"
     (edit)="editCourse($event)"
     (show)="showCourse($event)"
-    [courses]="courses"
-  ></app-course-list>
-</div>
+    [courses]="courses$"
+  >
+    <app-search [placeholder]="'Search course'">
+      <app-button [buttonText]="'Search'" [type]="'button'"></app-button>
+    </app-search>
+  </app-course-list>
 
-<ng-template #info>
   <app-info
+    *ngIf="isInfo"
     [title]="infoTitle"
     [text]="infoText"
   >
-    <app-button [buttonText]="addButtonText"></app-button>
+    <app-button [buttonText]="addButtonText" [type]="'button'" (click)="addCourse()"></app-button>
   </app-info>
-</ng-template>
+
+  <app-course-form *ngIf="isCourseFormOpen" (submitCourse)="submit($event)"></app-course-form>
+</div>
 
 <app-modal
   [modalOpen]="isConfirmModalOpen"
@@ -27,3 +33,14 @@
   [message]="modalMessage"
 >
 </app-modal>
+
+<app-login
+  *ngIf="isLogin"
+  [(isLogin)]="isLogin"
+  (isRegistration)="isRegistration"
+></app-login>
+
+
+
+
+
