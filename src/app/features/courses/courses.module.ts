@@ -6,6 +6,7 @@ import { CourseCardComponent } from './components/course-card/course-card.compon
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseFormModule } from '../course-form/course-form.module';
 import { LoginModule } from '../login/login.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { LoginModule } from '../login/login.module';
     SharedModule,
     CourseFormModule,
     LoginModule,
+    HttpClientModule,
   ],
   exports: [
     CoursesComponent

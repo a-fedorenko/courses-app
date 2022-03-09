@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model.js';
+import { CoursesStoreService } from '../../services/courses-store.service';
 import { mockedCourseList } from '../../core/constans/modules_module-02_mocks.js';
 
 @Component({
@@ -25,11 +26,14 @@ export class CoursesComponent implements OnInit {
   modalTitle: string = 'Confirm request please';
   modalMessage: string;
 
-  constructor() { }
+  constructor(
+    private coursesStore: CoursesStoreService
+  ) { }
 
   ngOnInit(): void {
     this.getUser();
     this.getCourses();
+    this.coursesStore.getAll().subscribe(item => console.log(item));
   }
 
   removeCourse(): void {

@@ -14,7 +14,7 @@ export class CourseListComponent implements OnInit {
   iconDelete: unknown = faTrashAlt;
   showButtonText: string = 'Show course';
 
-  @Input() courses: BehaviorSubject<Course[]>;
+  @Input() courses;
   @Input() isEdit: boolean = true;
 
   @Output() edit: EventEmitter<Course> = new EventEmitter<Course>();

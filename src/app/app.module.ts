@@ -9,6 +9,7 @@ import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {HttpClientModule} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { AuthModule } from './auth/auth.module';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { FormsModule } from '@angular/forms';
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
-    RegistrationModule
+    RegistrationModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]
