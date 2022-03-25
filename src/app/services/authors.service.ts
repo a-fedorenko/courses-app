@@ -12,15 +12,17 @@ export interface Author {
 })
 export class AuthorsService {
 
+  configUrl = 'http://localhost:3000';
+
   constructor(
     private http: HttpClient
   ) { }
 
   getAll(): Observable<Author[]> {
-    return this.http.get<Author[]>('http://localhost:3000/api/authors/all');
+    return this.http.get<Author[]>(`${this.configUrl}/authors/all`);
   }
 
   addAuthor(author: Author) {
-    return this.http.post('http://localhost:3000/api/authors/add', author);
+    return this.http.post(`${this.configUrl}/authors/add`, author);
   }
 }

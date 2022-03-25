@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model';
-import { mockedCourseList } from '../../core/constans/modules_module-02_mocks.js';
 
 @Component({
   selector: 'app-course-form',
@@ -12,7 +11,14 @@ import { mockedCourseList } from '../../core/constans/modules_module-02_mocks.js
 export class CourseFormComponent implements OnInit {
 
   courseForm: FormGroup;
-  courses$ = new BehaviorSubject<Course[]>(mockedCourseList);
+  courses$ = new BehaviorSubject<Course[]>([{
+    id: 'string',
+    title: 'string',
+    description: 'string',
+    creationDate: new Date,
+    duration:  120,
+    authors: []
+  }]);
   selectedCourseId: string | null;
   selectedCourse: Course;
   duration: number;

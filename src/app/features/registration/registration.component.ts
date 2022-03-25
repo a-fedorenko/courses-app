@@ -1,23 +1,32 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
 
   registrationForm: FormGroup;
+  sub: Subscription;
 
-  @Input() isRegistration: boolean;
-  @Output() isRegistrationChange: EventEmitter<boolean> =  new EventEmitter<boolean>();
-  @Output() isLogin: EventEmitter<boolean> =  new EventEmitter<boolean>();
-
-  constructor() { }
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
+  }
+
+  ngOnDestroy(): void {
+    if(this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   private initForm() {
@@ -30,10 +39,12 @@ export class RegistrationComponent implements OnInit {
 
   submit() {
     this.registrationForm.disable();
-  }
-
-  goToLogin() {
-    this.isLogin.emit(true);
+    this.sub = this.auth.register(this.registrationForm.value)
+      .subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        }
+      );
   }
 
 }

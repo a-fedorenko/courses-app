@@ -1,14 +1,14 @@
-<div class="container" *ngIf="!isLogin && !isRegistration">
+<div class="container">
   <app-header>
     <strong class="username">{{ username }}</strong>
-    <app-button [buttonText]="logButtonText" [type]="'button'" (click)="logOut()"></app-button>
+    <app-button [buttonText]="logButtonText" [type]="'button'" (click)="toLogin()"></app-button>
   </app-header>
 
   <app-course-list *ngIf="!isInfo && !isCourseFormOpen"
     (delete)="openRemoveModal($event)"
     (edit)="editCourse($event)"
     (show)="showCourse($event)"
-    [courses]="courses$"
+    [courses]="courses"
   >
     <app-search [placeholder]="'Search course'">
       <app-button [buttonText]="'Search'" [type]="'button'"></app-button>
@@ -34,11 +34,6 @@
 >
 </app-modal>
 
-<app-login
-  *ngIf="isLogin"
-  [(isLogin)]="isLogin"
-  (isRegistration)="isRegistration"
-></app-login>
 
 
 

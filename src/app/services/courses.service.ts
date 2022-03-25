@@ -9,33 +9,34 @@ import { Course } from '../core/models/course-model';
 export class CoursesService {
 
   configUrl = 'http://localhost:3000';
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'text/javascript',
-    }), responseType: 'text' as 'json'
-  };
 
   constructor(
     private http: HttpClient
   ) { }
 
-  getAll(): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.configUrl}/api/#/courses/all`, this.httpOptions);
+  getAll(): Observable<{
+    successful: boolean,
+    result?: Course[]
+  }> {
+    return this.http.get<{
+      successful: boolean,
+      result?: Course[]
+    }>(`${this.configUrl}/courses/all`);
   }
 
   createCourse(course: Course) {
-    return this.http.post('http://localhost:3000/api/courses/add', course);
+    return this.http.post(`${this.configUrl}/courses/add`, course);
   }
 
   editCourse(course: Course) {
-    return this.http.put(`http://localhost:3000/api/courses/${course.id}`, course);
+    return this.http.put(`${this.configUrl}/courses/${course.id}`, course);
   }
 
-  getCourse(id: string) {
-    return this.http.get<Course>(`http://localhost:3000/api/courses/${id}`);
+  getCourse(id: string): Observable<Course> {
+    return this.http.get<Course>(`${this.configUrl}/courses/${id}`);
   }
 
   deleteCourse(id: string) {
-    return this.http.delete(`http://localhost:3000/api/relations/${id}`);
+    return this.http.delete(`${this.configUrl}/relations/${id}`);
   }
 }

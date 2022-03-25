@@ -21,7 +21,9 @@
     "@fortawesome/angular-fontawesome": "^0.10.1",
     "@fortawesome/fontawesome-svg-core": "~1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@nestjs/swagger": "^5.2.0",
     "rxjs": "~7.5.0",
+    "swagger-ui-express": "^4.3.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },

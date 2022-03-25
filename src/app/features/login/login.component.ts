@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { User } from 'src/app/core/models/user-model';
 
 @Component({
   selector: 'app-login',
@@ -9,37 +12,20 @@ import { FormGroup } from '@angular/forms';
 export class LoginComponent implements OnInit {
 
   user = {
-    email: "",
-    password: ""
+    email: '',
+    password: ''
   };
-  isRegistration: boolean = false;
 
-  @Input() isLogin: boolean;
-  @Output() isLoginChange: EventEmitter<boolean> =  new EventEmitter<boolean>();
-  @Output() isRegistrationChange: EventEmitter<boolean> =  new EventEmitter<boolean>();
-
-  constructor() { }
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
 
   submit() {
     //alert(JSON.stringify(form.value, null, 2));
-  }
-
-  login() {
-    this.isLogin = false;
-    this.isLoginChange.emit(this.isLogin);
-  }
-
-  goToRegistration() {
-    this.isLogin = false;
-    this.isRegistration = true;
-  }
-
-  goToLogin(data: boolean) {
-    this.isLogin = data;
-    this.isRegistration = false;
   }
 
 }

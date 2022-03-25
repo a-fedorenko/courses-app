@@ -7,6 +7,8 @@ import { CourseListComponent } from './components/course-list/course-list.compon
 import { CourseFormModule } from '../course-form/course-form.module';
 import { LoginModule } from '../login/login.module';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { CoursesRoutingModule } from './courses-routing.module';
 
 
 @NgModule({
@@ -19,8 +21,9 @@ import { HttpClientModule } from '@angular/common/http';
     CommonModule,
     SharedModule,
     CourseFormModule,
-    LoginModule,
     HttpClientModule,
+    CoursesRoutingModule,
+    RouterModule
   ],
   exports: [
     CoursesComponent

@@ -7,9 +7,6 @@ import { CommonModule } from '@angular/common';
   declarations: [],
   imports: [
     CommonModule
-  ],
-  providers: [
-    { provide: "windowObject", useValue: window}
   ]
 })
-export class AuthModule { }
+export class UserModule { }

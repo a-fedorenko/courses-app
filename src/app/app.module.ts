@@ -7,9 +7,11 @@ import { RegistrationModule } from './features/registration/registration.module'
 import { CoursesModule } from './features/courses/courses.module';
 import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
+import { TokenInterceptor } from './auth/interceptors/token.interceptor';
+import { UserModule } from './user/user.module';
 
 
 @NgModule({
@@ -25,10 +27,18 @@ import { AuthModule } from './auth/auth.module';
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
+    LoginModule,
     RegistrationModule,
-    AuthModule
+    AuthModule,
+    UserModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: TokenInterceptor
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

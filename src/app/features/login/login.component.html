@@ -1,4 +1,4 @@
-<div class="auth_block" *ngIf="isLogin">
+<div class="auth_block">
   <form class="form" #form="ngForm" (ngSubmit)="submit()">
     <div class="form_content">
       <span class="form_title">Login</span>
@@ -9,6 +9,7 @@
           type="email"
           #email="ngModel"
           [(ngModel)]="user.email"
+          [ngModelOptions]="{standalone: true}"
           required
           [class.invalid]="email.invalid
           && email.touched"
@@ -25,10 +26,15 @@
           type="password"
           #password="ngModel"
           [(ngModel)]="user.password"
+          [ngModelOptions]="{standalone: true}"
           required
           [class.invalid]="password.invalid
           && password.touched"
         >
+        <span class="invalid_text"
+        *ngIf="password.errors?.['required']">
+          Email is required.
+        </span>
       </div>
     </div>
     <div class="form_submit">
@@ -39,15 +45,10 @@
         [disabled]="!form.valid"
       ></app-button>
       <div class="register_link">
-        If You don't have an account You can <a href="#" (click)="goToRegistration()">Registration</a>
+        If You don't have an account You can <a routerLink="/registration">Registration</a>
       </div>
     </div>
   </form>
 </div>
 
-<app-registration
-  *ngIf="isRegistration"
-  [(isRegistration)]="isRegistration"
-  (isLogin)="goToLogin($event)"
-></app-registration>
 

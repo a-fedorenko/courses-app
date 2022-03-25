@@ -1,24 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model.js';
 import { CoursesStoreService } from '../../services/courses-store.service';
-import { mockedCourseList } from '../../core/constans/modules_module-02_mocks.js';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss']
 })
-export class CoursesComponent implements OnInit {
+export class CoursesComponent implements OnInit, OnDestroy {
 
-  courses$ = new BehaviorSubject<Course[]>(mockedCourseList);
+  courses: Course[];
   username: string;
   logButtonText: string;
   isConfirmModalOpen: boolean = false;
   isCourseFormOpen: boolean = false;
   isInfo: boolean = false;
-  isLogin: boolean = false;
-  isRegistration: boolean = false;
   selectedСourse: Course;
   addButtonText: string = 'Add new course';
   infoTitle: string = 'Your list is empty';
@@ -27,22 +25,29 @@ export class CoursesComponent implements OnInit {
   modalMessage: string;
 
   constructor(
-    private coursesStore: CoursesStoreService
+    private coursesStore: CoursesStoreService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.getUser();
-    this.getCourses();
-    this.coursesStore.getAll().subscribe(item => console.log(item));
+    //this.courses$ = this.coursesStore.courses$;
+    this.coursesStore.courses$.subscribe(courses => {
+      this.courses = courses;
+    })
   }
 
-  removeCourse(): void {
-    const courses = this.courses$.getValue().filter(course => {
-      return course.id !== this.selectedСourse.id;
-    });
-    this.courses$.next(courses);
-    if(courses.length === 0) {
-      this.isInfo = true;
+  ngOnDestroy(): void {
+
+  }
+
+  private removeCourse(): void {
+    this.coursesStore.deleteCourse(this.selectedСourse.id);
+    console.log(this.courses.length);
+
+    if(this.courses.length === 0) {
+      console.log('hi');
+
     }
   }
 
@@ -77,35 +82,32 @@ export class CoursesComponent implements OnInit {
   }
 
   private saveCourse(data: Course): void {
-    const courses = this.courses$.getValue();
-    let find = courses.find(item => item.id === data.id);
-    if(find) {
-      this.courses$.next([
-        ...courses.map(item => {
-          if(item.id === data.id) {
-            return data;
-          } else {
-            return item;
-          }
-        })
-      ]);
-    } else {
-      this.courses$.next([
-        ...courses,
-        {
-          ...data,
-          id: courses[courses.length+1]+'1'
-        }
-      ]);
-    }
+    this.coursesStore.createCourse(data);
+    // const courses = this.courses$.getValue();
+    // let find = courses.find(item => item.id === data.id);
+    // if(find) {
+    //   this.courses$.next([
+    //     ...courses.map(item => {
+    //       if(item.id === data.id) {
+    //         return data;
+    //       } else {
+    //         return item;
+    //       }
+    //     })
+    //   ]);
+    // } else {
+    //   this.courses$.next([
+    //     ...courses,
+    //     {
+    //       ...data,
+    //       id: courses[courses.length+1]+'1'
+    //     }
+    //   ]);
+    // }
   }
 
   private setSessionStorage(id: string): void {
     sessionStorage.setItem('id', id);
-  }
-
-  private getCourses(): Observable<Course[]> {
-    return this.courses$.asObservable();
   }
 
   private getUser(): void {
@@ -117,8 +119,8 @@ export class CoursesComponent implements OnInit {
     this.logButtonText = 'Logout';
   }
 
-  logOut() {
-    this.isLogin = true;
+  toLogin(): void {
+    this.router.navigate(['login']);
   }
 
 }

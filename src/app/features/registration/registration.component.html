@@ -1,4 +1,4 @@
-<div class="auth_block" *ngIf="isRegistration">
+<div class="auth_block">
   <form class="form" [formGroup]="registrationForm" (ngSubmit)="submit()">
     <div class="form_content">
       <span class="form_title">Registration</span>
@@ -57,7 +57,7 @@
         [disabled]="!registrationForm.valid"
       ></app-button>
       <div class="register_link">
-        If You have an account You can <a href="#" (click)="goToLogin()">Login</a>
+        If You have an account You can <a routerLink="/login">Login</a>
       </div>
     </div>
   </form>
