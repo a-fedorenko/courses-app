@@ -1,5 +1,7 @@
 <div class="wrapper">
-  <ng-content></ng-content>
+  <app-search [placeholder]="'Search course'">
+    <app-button [buttonText]="'Search'" [type]="'button'"></app-button>
+  </app-search>
   <app-course-card  *ngFor="let course of courses"
     [title]="course.title"
     [description]="course.description"
@@ -10,7 +12,7 @@
     <div class="btn_block">
       <app-button [buttonText]="showButtonText" (click)="showCourse(course)"></app-button>
       <ng-container *ngIf="isEdit">
-        <app-button [iconName]="iconEdit" (click)="editCourse(course)"></app-button>
+        <app-button [iconName]="iconEdit" (click)="editCourse(course)" routerLink="/courses/edit/:id"></app-button>
         <app-button [iconName]="iconDelete" (click)="deleteCourse(course)"></app-button>
       </ng-container>
     </div>

@@ -21,13 +21,17 @@ export class TokenInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(this.auth.isAuthorized$()) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: this.sessionStorage.getToken() ?? ''
+    this.auth.isAuthorized$().subscribe(
+      value => {
+        if(value) {
+          request = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${this.sessionStorage.getToken()}` ?? ''
+            }
+          });
         }
-      });
-    }
+      }
+    )
     return next.handle(request)
       .pipe(
         catchError(

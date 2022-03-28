@@ -1,15 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { User } from 'src/app/core/models/user-model';
+import { UserStoreService } from 'src/app/user/services/user-store.service';
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+
+  sub: Subscription;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   user = {
     email: '',
@@ -18,14 +22,29 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private userStore: UserStoreService
   ) { }
 
   ngOnInit(): void {
   }
 
-  submit() {
-    //alert(JSON.stringify(form.value, null, 2));
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  submit(form: NgForm) {
+    this.auth.login(form.value)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.userStore.isAdmin()
+            .subscribe()
+        },
+        error: err => {
+          alert(err.error.result);
+        }
+      });
   }
 
 }

@@ -23,8 +23,6 @@ export class CourseFormComponent implements OnInit {
   selectedCourse: Course;
   duration: number;
 
-  @Output() submitCourse: EventEmitter<Course> = new EventEmitter<Course>();
-
   public get authors() {
     return this.courseForm.get('authors') as FormArray;
   }
@@ -47,7 +45,6 @@ export class CourseFormComponent implements OnInit {
       creationDate: Date.now(),
       authors: this.authors.value
     }
-    this.submitCourse.emit(course);
   }
 
   addAuthor(): void {

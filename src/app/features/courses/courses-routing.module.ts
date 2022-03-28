@@ -1,20 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorizedGuard } from 'src/app/auth/guards/authorized.guard';
+import { AdminGuard } from 'src/app/user/guards/admin.guard';
 import { CourseFormComponent } from '../course-form/course-form.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
 import { CoursesComponent } from './courses.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: CoursesComponent,
     children: [
-      {path: 'add', component: CourseFormComponent},
-      {path: ':id', component: CourseFormComponent},
-      {path: 'edit/:id', component: CourseFormComponent}
-    ],
-    canLoad: [AuthorizedGuard],
+      {
+        path: '',
+        component: CoursesComponent,
+      },
+      {
+        path: 'add',
+        canActivate: [AdminGuard],
+        component: CourseFormComponent
+      },
+      {
+        path: ':id',
+        component: CourseFormComponent
+      },
+      {
+        path: 'edit/:id',
+        canActivate: [AdminGuard],
+        component: CourseFormComponent
+      }
+    ]
   },
 
 ];

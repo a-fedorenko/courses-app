@@ -1,35 +1,33 @@
 <div class="container">
   <app-header>
-    <strong class="username">{{ username }}</strong>
-    <app-button [buttonText]="logButtonText" [type]="'button'" (click)="toLogin()"></app-button>
+    <strong class="username">{{ username$ | async }}</strong>
+    <app-button [buttonText]="'Logout'" [type]="'button'" (click)="logout()"></app-button>
   </app-header>
 
-  <app-course-list *ngIf="!isInfo && !isCourseFormOpen"
+  <app-course-list
     (delete)="openRemoveModal($event)"
     (edit)="editCourse($event)"
     (show)="showCourse($event)"
-    [courses]="courses"
+    [courses]="courses$ | async"
   >
-    <app-search [placeholder]="'Search course'">
-      <app-button [buttonText]="'Search'" [type]="'button'"></app-button>
-    </app-search>
   </app-course-list>
 
-  <app-info
-    *ngIf="isInfo"
-    [title]="infoTitle"
-    [text]="infoText"
+  <app-info *ngIf="isInfo"
+    [title]="'Your list is empty'"
+    [text]="'Please use the button \'Add new course\' to add your first course'"
   >
-    <app-button [buttonText]="addButtonText" [type]="'button'" (click)="addCourse()"></app-button>
+    <app-button [buttonText]="'Add new course'" [type]="'button'" (click)="addCourse()"></app-button>
   </app-info>
-
-  <app-course-form *ngIf="isCourseFormOpen" (submitCourse)="submit($event)"></app-course-form>
 </div>
+
+<router-outlet></router-outlet>
+
+
 
 <app-modal
   [modalOpen]="isConfirmModalOpen"
   (confirm)="confirmRemoveCourse($event)"
-  [title]="modalTitle"
+  [title]="'Confirm request please'"
   [message]="modalMessage"
 >
 </app-modal>

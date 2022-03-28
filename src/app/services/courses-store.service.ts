@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Course } from '../core/models/course-model';
 import { CoursesService } from './courses.service';
 
@@ -10,24 +10,34 @@ export class CoursesStoreService {
 
   private isLoading$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private courses$$: BehaviorSubject<Course[]> = new BehaviorSubject<Course[]>([]);
+  private course$$: BehaviorSubject<Course>;
 
   get isLoading$(): Observable<boolean> {
     return this.isLoading$$.asObservable();
   }
 
   get courses$(): Observable<Course[]> {
-    this.getAll();
     return this.courses$$.asObservable();
+  }
+
+  get course$(): Observable<Course> {
+    return this.course$$.asObservable();
   }
 
   constructor(
     private coursesService: CoursesService
   ) { }
 
-  getAll(): void {
-    this.coursesService.getAll().subscribe(courses => {
-      this.courses$$.next(courses.result ?? []);
-    });
+  getAll(): Observable<{
+    successful: boolean,
+    result?: Course[]
+  }> {
+    return this.coursesService.getAll()
+      .pipe(
+        tap(({result}) => {
+          this.courses$$.next(result ?? []);
+        })
+      );
   }
 
   createCourse(course: Course): void {
@@ -65,7 +75,11 @@ export class CoursesStoreService {
 
   }
 
-  getCourse() {
+  getCourse(id: string): void {
+    this.coursesService.getCourse(id)
+      .subscribe(res => {
+        this.course$$ = new BehaviorSubject<Course>(res.result);
+      });
   }
 
   deleteCourse(id: string) {

@@ -35,8 +35,8 @@ import { UserModule } from './user/user.module';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      multi: true,
-      useClass: TokenInterceptor
+      useClass: TokenInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

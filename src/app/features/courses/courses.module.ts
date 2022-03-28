@@ -5,7 +5,6 @@ import { CoursesComponent } from './courses.component';
 import { CourseCardComponent } from './components/course-card/course-card.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseFormModule } from '../course-form/course-form.module';
-import { LoginModule } from '../login/login.module';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CoursesRoutingModule } from './courses-routing.module';

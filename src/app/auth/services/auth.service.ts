@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { User } from 'src/app/core/models/user-model';
 import { SessionStorageService } from './session-storage.service';
 
@@ -22,30 +23,40 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private sessionStorage: SessionStorageService,
+    private router: Router
   ) { }
 
-  login(user: User): Observable<Response> {
-    return this.http.post<Response>(`${this.configUrl}/login`, user)
+  login(user: User): Observable<any> {
+    return this.http.post<any>(`${this.configUrl}/login`, user)
       .pipe(
         tap(({result}) => {
           let token = result.split(' ');
           this.sessionStorage.setToken(token[1]);
-        })
+          this.isAuthorized$$.next(true);
+        }),
+        catchError(error => of(error))
       )
   }
 
-  logout(): Observable<User> {
-    return this.http.delete<User>(`${this.configUrl}/logout`)
+  logout() {
+    return this.http.delete(`${this.configUrl}/logout`)
       .pipe(
         tap(() => {
           this.sessionStorage.deleteToken();
           this.isAuthorized$$.next(false);
+          this.router.navigate(['/login']);
         })
       )
   }
 
   register(user: User): Observable<any> {
-    return this.http.post<any>(`${this.configUrl}/register`, user);
+    return this.http.post<any>(`${this.configUrl}/register`, user)
+      .pipe(
+        tap(() => {
+          this.router.navigate(['/login']);
+        }),
+        catchError(error => of(error))
+      )
   }
 
   isAuthorized$(): Observable<boolean> {

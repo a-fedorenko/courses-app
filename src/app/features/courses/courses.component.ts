@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { Course } from 'src/app/core/models/course-model.js';
+import { UserStoreService } from 'src/app/user/services/user-store.service';
+import { UserService } from 'src/app/user/services/user.service';
 import { CoursesStoreService } from '../../services/courses-store.service';
 
 @Component({
@@ -11,44 +14,35 @@ import { CoursesStoreService } from '../../services/courses-store.service';
 })
 export class CoursesComponent implements OnInit, OnDestroy {
 
-  courses: Course[];
-  username: string;
-  logButtonText: string;
+  destroy$: Subject<boolean> = new Subject<boolean>();
+  courses$: Observable<Course[]>;
+  username$: Observable<string | null>;
+  username: string | null;
   isConfirmModalOpen: boolean = false;
-  isCourseFormOpen: boolean = false;
   isInfo: boolean = false;
   selectedСourse: Course;
-  addButtonText: string = 'Add new course';
-  infoTitle: string = 'Your list is empty';
-  infoText: string = `Please use the button '${this.addButtonText}' to add your first course`;
-  modalTitle: string = 'Confirm request please';
   modalMessage: string;
 
   constructor(
     private coursesStore: CoursesStoreService,
+    private auth: AuthService,
+    private userService: UserService,
+    private userStore: UserStoreService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.getUser();
-    //this.courses$ = this.coursesStore.courses$;
-    this.coursesStore.courses$.subscribe(courses => {
-      this.courses = courses;
-    })
+    this.getCourses();
   }
 
   ngOnDestroy(): void {
-
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
-  private removeCourse(): void {
+  private removeCourse() {
     this.coursesStore.deleteCourse(this.selectedСourse.id);
-    console.log(this.courses.length);
-
-    if(this.courses.length === 0) {
-      console.log('hi');
-
-    }
   }
 
   openRemoveModal(course: Course): void {
@@ -57,7 +51,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.modalMessage = `Do you want to remove ${this.selectedСourse.title} course?`;
   }
 
-  confirmRemoveCourse(data: boolean): void {
+  confirmRemoveCourse(data: boolean) {
     if (data) {
       this.removeCourse();
     }
@@ -65,19 +59,16 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   editCourse(course: Course): void {
-    this.setSessionStorage(course.id);
-    this.isCourseFormOpen = true;
+    this.coursesStore.getCourse(course.id);
   }
 
   showCourse(course: Course): void {}
 
   addCourse(): void {
     this.isInfo = false;
-    this.isCourseFormOpen = true;
   }
 
   submit(data: Course): void {
-    this.isCourseFormOpen = false;
     this.saveCourse(data);
   }
 
@@ -106,21 +97,25 @@ export class CoursesComponent implements OnInit, OnDestroy {
     // }
   }
 
-  private setSessionStorage(id: string): void {
-    sessionStorage.setItem('id', id);
+  private getCourses(): void {
+    this.coursesStore.getAll()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+    this.courses$ = this.coursesStore.courses$;
   }
+
 
   private getUser(): void {
-    this.username = 'Somebody';
-    this.login();
+    this.userService.getUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+    this.username$ = this.userStore.name$;
   }
 
-  private login(): void {
-    this.logButtonText = 'Logout';
-  }
-
-  toLogin(): void {
-    this.router.navigate(['login']);
+  logout(): void {
+    this.auth.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
 }

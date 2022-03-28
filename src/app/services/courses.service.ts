@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Course } from '../core/models/course-model';
@@ -32,11 +32,17 @@ export class CoursesService {
     return this.http.put(`${this.configUrl}/courses/${course.id}`, course);
   }
 
-  getCourse(id: string): Observable<Course> {
-    return this.http.get<Course>(`${this.configUrl}/courses/${id}`);
+  getCourse(id: string): Observable<{
+    successful: boolean,
+    result: Course
+  }> {
+    return this.http.get<{
+      successful: boolean,
+      result: Course
+    }>(`${this.configUrl}/courses/${id}`);
   }
 
   deleteCourse(id: string) {
-    return this.http.delete(`${this.configUrl}/relations/${id}`);
+    this.http.delete(`${this.configUrl}/courses/${id}`);
   }
 }

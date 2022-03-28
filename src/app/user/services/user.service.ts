@@ -16,11 +16,11 @@ export class UserService {
 
   getUser(): Observable<{
     successful: boolean,
-    result?: User
+    result: User
   }> {
     return this.http.get<{
       successful: boolean,
-      result?: User
+      result: User
     }>(`${this.configUrl}/users/me`);
   }
 }
