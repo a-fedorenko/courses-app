@@ -4,13 +4,15 @@
     <app-button [buttonText]="'Logout'" [type]="'button'" (click)="logout()"></app-button>
   </app-header>
 
-  <app-course-list
+  <app-course-list  *ngIf="!isInfo"
     (delete)="openRemoveModal($event)"
-    (edit)="editCourse($event)"
+    (edit)="openEditForm($event)"
     (show)="showCourse($event)"
-    [courses]="courses$ | async"
+    [courses]="courses"
+    [isEdit]="isAdmin"
   >
   </app-course-list>
+
 
   <app-info *ngIf="isInfo"
     [title]="'Your list is empty'"
@@ -18,11 +20,10 @@
   >
     <app-button [buttonText]="'Add new course'" [type]="'button'" (click)="addCourse()"></app-button>
   </app-info>
+
 </div>
 
 <router-outlet></router-outlet>
-
-
 
 <app-modal
   [modalOpen]="isConfirmModalOpen"

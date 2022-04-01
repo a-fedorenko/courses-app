@@ -16,20 +16,37 @@ export class CoursesService {
 
   getAll(): Observable<{
     successful: boolean,
-    result?: Course[]
+    result: Course[]
   }> {
     return this.http.get<{
       successful: boolean,
-      result?: Course[]
+      result: Course[]
     }>(`${this.configUrl}/courses/all`);
   }
 
-  createCourse(course: Course) {
-    return this.http.post(`${this.configUrl}/courses/add`, course);
+  filterCourse(title: string): Observable<{
+    successful: boolean,
+    result: Course[]
+  }> {
+    return this.http.get<{
+      successful: boolean,
+      result: Course[]
+    }>(`${this.configUrl}/courses/filter?title=${title}`);
   }
 
-  editCourse(course: Course) {
-    return this.http.put(`${this.configUrl}/courses/${course.id}`, course);
+  addCourse(course: Course): Observable<{
+    successful: boolean,
+    result: Course
+  }> {
+    return this.http.post<{
+      successful: boolean,
+      result: Course
+    }>(`${this.configUrl}/courses/add`, {
+      title: course.title,
+      description: course.description,
+      duration: course.duration,
+      authors: course.authors,
+    });
   }
 
   getCourse(id: string): Observable<{
@@ -42,7 +59,28 @@ export class CoursesService {
     }>(`${this.configUrl}/courses/${id}`);
   }
 
-  deleteCourse(id: string) {
-    this.http.delete(`${this.configUrl}/courses/${id}`);
+  editCourse(course: Course): Observable<{
+    successful: boolean,
+    result: Course
+  }> {
+    return this.http.put<{
+      successful: boolean,
+      result: Course
+    }>(`${this.configUrl}/courses/${course.id}`, {
+      title: course.title,
+      description: course.description,
+      duration: course.duration,
+      authors: course.authors,
+    });
+  }
+
+  deleteCourse(id: string): Observable<{
+    successful: boolean,
+    result: string
+  }> {
+    return this.http.delete<{
+      successful: boolean,
+      result: string
+    }>(`${this.configUrl}/courses/${id}`);
   }
 }

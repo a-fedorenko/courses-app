@@ -22,6 +22,7 @@ export class UserStoreService {
     return this.userService.getUser()
       .pipe(
         tap(value => {
+          this.name$$.next(value.result.name);
           if(value.result.role === 'admin') {
             this.isAdmin$$.next(true);
           } else {
@@ -32,12 +33,6 @@ export class UserStoreService {
   }
 
   get name$(): Observable<string | null> {
-    this.userService.getUser()
-      .pipe(
-        tap(value => {
-          this.name$$.next(value.result.name);
-        })
-      );
     return this.name$$.asObservable();
   }
 

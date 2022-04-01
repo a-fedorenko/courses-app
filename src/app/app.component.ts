@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/services/auth.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SessionStorageService } from './auth/services/session-storage.service';
 
 @Component({
@@ -9,17 +8,15 @@ import { SessionStorageService } from './auth/services/session-storage.service';
 })
 export class AppComponent {
 
-  title = 'courses-app';
+  constructor (
+    private sessionStorage: SessionStorageService,
+  ) {}
 
-  // constructor (
-  //   private sessionStorage: SessionStorageService
-  // ) {}
-
-  // ngOnInit () {
-  //   const token = sessionStorage.getItem('token');
-  //   if (token !== null && token !== '') {
-  //     this.sessionStorage.setToken(token);
-  //   }
-  // }
+  ngOnInit () {
+    const token = sessionStorage.getItem('token');
+    if (token !== null && token !== '') {
+      this.sessionStorage.setToken(token);
+    }
+  }
 
 }

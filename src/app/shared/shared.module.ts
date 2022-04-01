@@ -12,6 +12,8 @@ import { DurationPipe } from './pipes/duration.pipe';
 import { CreationDatePipe } from './pipes/creation-date.pipe';
 import { StringJoinerPipe } from './pipes/string-joiner.pipe';
 import { EmailValidatorDirective } from './validators/email-validator.directive';
+import { SearchFilterPipe } from './pipes/search-filter.pipe';
+import { FormsModule } from '@angular/forms';
 
 
 const COMPONENTS: any[] = [
@@ -24,7 +26,8 @@ const COMPONENTS: any[] = [
 const PIPES: any[] = [
   DurationPipe,
   CreationDatePipe,
-  StringJoinerPipe
+  StringJoinerPipe,
+  SearchFilterPipe
 ];
 
 
@@ -36,7 +39,8 @@ const PIPES: any[] = [
   ],
   imports: [
     CommonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    FormsModule
   ],
   exports: [
     ...COMPONENTS,

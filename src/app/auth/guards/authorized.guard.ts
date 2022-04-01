@@ -17,7 +17,7 @@ export class AuthorizedGuard implements CanLoad {
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean> {
-    return this.auth.isAuthorized$()
+    return this.auth.isAuthorized$
       .pipe(
         tap((value) => {
           if(!value) {

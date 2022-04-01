@@ -8,6 +8,7 @@ import { CourseFormModule } from '../course-form/course-form.module';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CoursesRoutingModule } from './courses-routing.module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { CoursesRoutingModule } from './courses-routing.module';
     CourseFormModule,
     HttpClientModule,
     CoursesRoutingModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   exports: [
     CoursesComponent

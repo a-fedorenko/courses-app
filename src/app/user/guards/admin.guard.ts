@@ -19,7 +19,6 @@ export class AdminGuard implements CanActivate {
     return this.userStore.isAdmin$
       .pipe(
         tap((value) => {
-          console.log(value);
           if(!value) {
             this.router.navigate(['/courses']);
           }

@@ -59,7 +59,7 @@ export class AuthService {
       )
   }
 
-  isAuthorized$(): Observable<boolean> {
+  get isAuthorized$(): Observable<boolean> {
     return this.isAuthorized$$.asObservable();
   }
 }

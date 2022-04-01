@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, pipe, pluck, tap } from 'rxjs';
 import { Course } from '../core/models/course-model';
 import { CoursesService } from './courses.service';
 
@@ -10,7 +10,7 @@ export class CoursesStoreService {
 
   private isLoading$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private courses$$: BehaviorSubject<Course[]> = new BehaviorSubject<Course[]>([]);
-  private course$$: BehaviorSubject<Course>;
+  private course$$: BehaviorSubject<Course | null> = new BehaviorSubject<Course | null>(null);
 
   get isLoading$(): Observable<boolean> {
     return this.isLoading$$.asObservable();
@@ -20,69 +20,61 @@ export class CoursesStoreService {
     return this.courses$$.asObservable();
   }
 
-  get course$(): Observable<Course> {
+  get course$(): Observable<Course | null> {
     return this.course$$.asObservable();
   }
 
   constructor(
-    private coursesService: CoursesService
+    private coursesService: CoursesService,
   ) { }
 
-  getAll(): Observable<{
-    successful: boolean,
-    result?: Course[]
-  }> {
+  getAll(): Observable<Course[]> {
     return this.coursesService.getAll()
       .pipe(
-        tap(({result}) => {
+        pluck('result'),
+        tap((result) => {
           this.courses$$.next(result ?? []);
         })
       );
   }
 
-  createCourse(course: Course): void {
-    this.coursesService.createCourse(course);
-    // const courses = this.courses$.getValue();
-    // let find = courses.find(item => item.id === data.id);
-    // if(find) {
-    //   this.courses$.next([
-    //     ...courses.map(item => {
-    //       if(item.id === data.id) {
-    //         return data;
-    //       } else {
-    //         return item;
-    //       }
-    //     })
-    //   ]);
-    // } else {
-    //   this.courses$.next([
-    //     ...courses,
-    //     {
-    //       ...data,
-    //       id: courses[courses.length+1]+'1'
-    //     }
-    //   ]);
-    // }
-
-    // const puppies = [...this.getPuppies(), puppy];
-    // this._setPuppies(puppies);
-    // this.coursesService.createCourse(course).subscribe(courses => {
-    //   console.log(courses);
-    // });
+  filterCourse(title: string): Observable<Course[]> {
+    return this.coursesService.filterCourse(title)
+      .pipe(
+        pluck('result')
+      )
   }
 
-  editCourse() {
-
+  addCourse(course: Course): Observable<{
+    successful: boolean,
+    result: Course
+  }> {
+    return this.coursesService.addCourse(course);
   }
 
-  getCourse(id: string): void {
-    this.coursesService.getCourse(id)
-      .subscribe(res => {
-        this.course$$ = new BehaviorSubject<Course>(res.result);
-      });
+  getCourse(id: string): Observable<{
+    successful: boolean,
+    result?: Course
+  }> {
+    return this.coursesService.getCourse(id)
+      .pipe(
+        tap(res => {
+          this.course$$.next(res.result);
+        })
+      )
   }
 
-  deleteCourse(id: string) {
-    this.coursesService.deleteCourse(id);
+  editCourse(course: Course): Observable<{
+    successful: boolean,
+    result: Course
+  }> {
+    return this.coursesService.editCourse(course);
+  }
+
+  deleteCourse(id: string): Observable<{
+    successful: boolean,
+    result: string
+  }>{
+    return this.coursesService.deleteCourse(id);
   }
 }

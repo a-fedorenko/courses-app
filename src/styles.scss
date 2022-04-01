@@ -24,6 +24,13 @@ body {
   color: --dark-color;
 }
 
+.container {
+  width: 95%;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0 2rem;
+}
+
 .wrapper {
   margin-top: 7rem;
   padding: 3rem;
@@ -35,6 +42,11 @@ body {
 
 ul {
   list-style: none;
+}
+
+.word_wrap {
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .flex_block {

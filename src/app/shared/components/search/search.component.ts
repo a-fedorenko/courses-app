@@ -7,12 +7,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
+  term: string;
   @Input() placeholder: string;
   @Output() search: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() { }
 
   ngOnInit(): void {
+
+  }
+
+  submit() {
+    this.search.emit(this.term);
   }
 
 }

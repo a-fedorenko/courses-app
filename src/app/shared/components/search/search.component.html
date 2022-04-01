@@ -1,4 +1,4 @@
 <div class="flex_block">
-  <input type="text" name="search" [placeholder]="placeholder">
-  <ng-content></ng-content>
+  <input type="text" name="search" [placeholder]="placeholder" [(ngModel)]="term">
+  <app-button [buttonText]="'Search'" [type]="'button'" (click)="submit()"></app-button>
 </div>
