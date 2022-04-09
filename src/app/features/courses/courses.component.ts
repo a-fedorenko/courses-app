@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, delay, filter, map, mergeMap, Observable, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
-import { AuthService } from 'src/app/auth/services/auth.service';
+import { map, mergeMap, Observable, Subject, takeUntil, zip } from 'rxjs';
+import { AuthStateFacade } from 'src/app/auth/store/auth.facade';
 import { Course } from 'src/app/core/models/course-model.js';
-import { AuthorsStoreService } from 'src/app/services/authors-store.service';
-import { Author } from 'src/app/services/authors.service';
-import { UserStoreService } from 'src/app/user/services/user-store.service';
-import { UserService } from 'src/app/user/services/user.service';
+import { AuthorsStateFacade } from 'src/app/store/authors/authors.facade';
+import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
+import { UserStateFacade } from 'src/app/user/store/user.facade';
 import { CoursesStoreService } from '../../services/courses-store.service';
 
 @Component({
@@ -18,28 +17,29 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
   username$: Observable<string | null>;
-  courses: Course[];
-  authors: Author[];
+  isAdmin$: Observable<boolean | null>;
+  allCourses$: Observable<Course[] | null>;
   isConfirmModalOpen: boolean = false;
   isInfo: boolean = false;
-  isAdmin: boolean = false;
   selectedСourse: Course;
   modalMessage: string;
 
   constructor(
     private coursesStore: CoursesStoreService,
-    private auth: AuthService,
-    private userService: UserService,
-    private userStore: UserStoreService,
     private router: Router,
-    private authorsStore: AuthorsStoreService
-  ) { }
+    private userFacade: UserStateFacade,
+    private authFacade: AuthStateFacade,
+    private authorsFacade: AuthorsStateFacade,
+    private coursesFacade: CoursesStateFacade
+  ) {
+    this.userFacade.getCurrentUser();
+    this.authorsFacade.getAuthors();
+    this.coursesFacade.getAllCourses();
+  }
 
   ngOnInit(): void {
     this.getUser();
-    this.getAuthors();
     this.getCourses();
-    this.username$ = this.userStore.name$;
   }
 
   ngOnDestroy(): void {
@@ -71,23 +71,15 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   openEditForm(course: Course): void {
-    this.coursesStore.getCourse(course.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        () => {
-          this.router.navigate(['/courses/edit/:id']);
-        }
-      );
+    this.coursesFacade.getSingleCourse(course.id);
+    setTimeout(() => {
+      this.router.navigate(['/courses/edit/:id']);
+    }, 10);
   }
 
   showCourse(course: Course): void {
-    this.coursesStore.getCourse(course.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        () => {
-          this.router.navigate(['/courses/:id']);
-        }
-      );
+    this.coursesFacade.getSingleCourse(course.id);
+    this.router.navigate(['/courses/:id']);
   }
 
   addCourse(): void {
@@ -95,61 +87,43 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/courses/edit/:id']);
   }
 
+  private getUser(): void {
+    this.username$ = this.userFacade.name$;
+    this.isAdmin$ = this.userFacade.isAdmin$;
+  }
+
   private getCourses(): void {
-    this.coursesStore.getAll()
+    this.allCourses$ = zip([this.coursesFacade.allCourses$, this.authorsFacade.authors$])
       .pipe(
-        map((result) => {
-          return result?.map(course => {
+        map(([courses, authors]) => courses.map(course => {
             return {
               ...course,
-              authors: course.authors.map(author => this.authors.find(aut => aut.id === author)?.name ?? author)
+              authors: course.authors.map(author => authors.find(aut => aut.id === author)?.name ?? author)
             }
-          });
-        }),
-        takeUntil(this.destroy$)
+          })
+        )
       )
-      .subscribe(
-        courses => {
-          this.courses = courses ?? [];
-          if(this.courses.length === 0) {
-            this.isInfo = true;
-          }
-        }
-      );
-  }
 
-  private getAuthors(): void {
-    this.authorsStore.getAll()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        authors => this.authors = authors
-      );
-  }
-
-  private getUser(): void {
-    this.userService.getUser()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        user => {
-          if(user.result.role === 'admin') {
-            this.isAdmin = true;
-          }
-        }
-      );
+      // .subscribe(
+      //   courses => {
+      //     this.courses = courses ?? [];
+      //     if(this.courses.length === 0) {
+      //       this.isInfo = true;
+      //     }
+      //   }
+      // );
   }
 
   logout(): void {
-    this.auth.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.authFacade.logout();
   }
 
   filter(data: string): void {
     this.coursesStore.filterCourse(data)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        courses => this.courses = courses ?? []
-      );
+      // .pipe(takeUntil(this.destroy$))
+      // .subscribe(
+      //   courses => this.courses = courses ?? []
+      // );
   }
 
 }

@@ -1,19 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Subject, Subscription, takeUntil } from 'rxjs';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { UserStoreService } from 'src/app/user/services/user-store.service';
-
+import { AuthStateFacade } from 'src/app/auth/store/auth.facade';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
-
-  sub: Subscription;
-  destroy$: Subject<boolean> = new Subject<boolean>();
+export class LoginComponent implements OnInit {
 
   user = {
     email: '',
@@ -21,30 +15,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private auth: AuthService,
-    private userStore: UserStoreService
+    private authFacade: AuthStateFacade
   ) { }
 
   ngOnInit(): void {
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
   submit(form: NgForm) {
-    this.auth.login(form.value)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.userStore.isAdmin()
-            .subscribe()
-        },
-        error: err => {
-          alert(err.error.result);
-        }
-      });
+    this.authFacade.login(form.value);
   }
 
 }

@@ -24,14 +24,14 @@ export class CoursesService {
     }>(`${this.configUrl}/courses/all`);
   }
 
-  filterCourse(title: string): Observable<{
+  filterCourses(searchValue: string): Observable<{
     successful: boolean,
     result: Course[]
   }> {
     return this.http.get<{
       successful: boolean,
       result: Course[]
-    }>(`${this.configUrl}/courses/filter?title=${title}`);
+    }>(`${this.configUrl}/courses/filter?title=${searchValue}`);
   }
 
   addCourse(course: Course): Observable<{
@@ -59,14 +59,14 @@ export class CoursesService {
     }>(`${this.configUrl}/courses/${id}`);
   }
 
-  editCourse(course: Course): Observable<{
+  editCourse(course: Course, id: string): Observable<{
     successful: boolean,
     result: Course
   }> {
     return this.http.put<{
       successful: boolean,
       result: Course
-    }>(`${this.configUrl}/courses/${course.id}`, {
+    }>(`${this.configUrl}/courses/${id}`, {
       title: course.title,
       description: course.description,
       duration: course.duration,

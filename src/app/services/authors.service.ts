@@ -28,7 +28,7 @@ export class AuthorsService {
     }>(`${this.configUrl}/authors/all`);
   }
 
-  addAuthor(name: string): Observable<{
+  addNewAuthor(name: string): Observable<{
     successful: boolean,
     result: Author
   }> {

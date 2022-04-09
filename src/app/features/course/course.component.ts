@@ -1,40 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model';
-import { CoursesStoreService } from 'src/app/services/courses-store.service';
+import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 
 @Component({
   selector: 'app-course',
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.scss']
 })
-export class CourseComponent implements OnInit, OnDestroy {
+export class CourseComponent implements OnInit {
 
-  destroy$: Subject<boolean> = new Subject<boolean>();
-  selectedCourse: Course | null;
+  selectedCourse$: Observable<Course | null>;
 
   constructor(
-    private coursesStore: CoursesStoreService,
+    private coursesFacade: CoursesStateFacade
   ) { }
 
   ngOnInit(): void {
     this.getCourse();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
   private getCourse (): void {
-    this.coursesStore.course$
-      .pipe(
-        tap(course => {
-          this.selectedCourse = course
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe()
+    this.selectedCourse$ = this.coursesFacade.course$;
   }
 
 }

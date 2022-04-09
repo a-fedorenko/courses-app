@@ -12,6 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
 import { UserModule } from './user/user.module';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { reducers, effects } from '../app/store/index';
+import { CourseModule } from './features/course/course.module';
 
 
 @NgModule({
@@ -23,6 +28,7 @@ import { UserModule } from './user/user.module';
     AppRoutingModule,
     FormsModule,
     CoursesModule,
+    CourseModule,
     SharedModule,
     FontAwesomeModule,
     HttpClientModule,
@@ -30,7 +36,12 @@ import { UserModule } from './user/user.module';
     LoginModule,
     RegistrationModule,
     AuthModule,
-    UserModule
+    UserModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
+    StoreDevtoolsModule.instrument({
+
+    }),
   ],
   providers: [
     {

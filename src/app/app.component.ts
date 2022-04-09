@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SessionStorageService } from './auth/services/session-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +7,10 @@ import { SessionStorageService } from './auth/services/session-storage.service';
 })
 export class AppComponent {
 
-  constructor (
-    private sessionStorage: SessionStorageService,
-  ) {}
+  constructor () {}
 
   ngOnInit () {
-    const token = sessionStorage.getItem('token');
-    if (token !== null && token !== '') {
-      this.sessionStorage.setToken(token);
-    }
+
   }
 
 }

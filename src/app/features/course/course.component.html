@@ -1,10 +1,11 @@
 <div class="container">
-  <div class="wrapper">
+  <div class="wrapper" *ngIf="selectedCourse$ | async as course">
     <ul>
-      <li><strong>Title: </strong>{{ selectedCourse?.title }}</li>
-      <li><strong>Duration: </strong>{{ selectedCourse?.duration }}</li>
-      <li><strong>Created: </strong>{{ selectedCourse?.creationDate }}</li>
-      <li><strong>Description: </strong>{{ selectedCourse?.description }}</li>
+      <li><strong>Title: </strong>{{ course.title }}</li>
+      <li><strong>Duration: </strong>{{ course.duration }}</li>
+      <li><strong>Created: </strong>{{ course.creationDate }}</li>
+      <li><strong>Authors: </strong>{{ course.authors }}</li>
+      <li><strong>Description: </strong>{{ course.description }}</li>
     </ul>
   </div>
 </div>

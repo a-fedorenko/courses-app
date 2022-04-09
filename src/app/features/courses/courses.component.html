@@ -8,8 +8,8 @@
     (delete)="openRemoveModal($event)"
     (edit)="openEditForm($event)"
     (show)="showCourse($event)"
-    [courses]="courses"
-    [isEdit]="isAdmin"
+    [courses]="allCourses$ | async"
+    [isEdit]="isAdmin$ | async"
   >
   </app-course-list>
 

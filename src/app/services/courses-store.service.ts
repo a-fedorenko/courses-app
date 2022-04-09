@@ -39,7 +39,7 @@ export class CoursesStoreService {
   }
 
   filterCourse(title: string): Observable<Course[]> {
-    return this.coursesService.filterCourse(title)
+    return this.coursesService.filterCourses(title)
       .pipe(
         pluck('result')
       )
@@ -68,7 +68,7 @@ export class CoursesStoreService {
     successful: boolean,
     result: Course
   }> {
-    return this.coursesService.editCourse(course);
+    return this.coursesService.editCourse(course, course.id);
   }
 
   deleteCourse(id: string): Observable<{

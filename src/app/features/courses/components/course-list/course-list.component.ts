@@ -17,8 +17,8 @@ export class CourseListComponent implements OnInit, OnDestroy {
   showButtonText: string = 'Show course';
   search: string;
 
-  @Input() courses;
-  @Input() isEdit: boolean = true;
+  @Input() courses: Course[] | null;
+  @Input() isEdit: boolean | null;
 
 
   @Output() edit: EventEmitter<Course> = new EventEmitter<Course>();

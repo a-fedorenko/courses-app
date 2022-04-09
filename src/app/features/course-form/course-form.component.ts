@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { delay, map, Subject, takeUntil, tap, zip } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model';
-import { AuthorsStoreService } from 'src/app/services/authors-store.service';
 import { Author } from 'src/app/services/authors.service';
-import { CoursesStoreService } from 'src/app/services/courses-store.service';
+import { AuthorsStateFacade } from 'src/app/store/authors/authors.facade';
+import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 
 @Component({
   selector: 'app-course-form',
@@ -16,10 +15,9 @@ export class CourseFormComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
   courseForm: FormGroup;
-  allCourses: Course[];
-  allAuthors: Author[];
-  currentCourseAuthors: string[];
+  currentCourseAuthors: string[] = [];
   selectedCourse: Course | null;
+  allAuthors: Author[];
   duration: number;
 
   public get authors() {
@@ -27,17 +25,17 @@ export class CourseFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private coursesStore: CoursesStoreService,
-    private authorsStore: AuthorsStoreService,
-    private router: Router,
-  ) { }
+    private coursesFacade: CoursesStateFacade,
+    private authorsFacade: AuthorsStateFacade,
+  ) {
+    this.coursesFacade.getAllCourses();
+    this.authorsFacade.getAuthors();
+  }
 
   ngOnInit(): void {
     this.getAllAuthors();
     this.getCourse();
-    this.getAllCourses();
     this.duration = this.selectedCourse?.duration ?? 0;
-    this.currentCourseAuthors = this.selectedCourse?.authors ?? [];
     this.initForm();
   }
 
@@ -47,30 +45,27 @@ export class CourseFormComponent implements OnInit, OnDestroy {
   }
 
   private getCourse (): void {
-    this.coursesStore.course$
+    zip([this.coursesFacade.course$, this.authorsFacade.authors$])
       .pipe(
-        tap(course => {
-          this.selectedCourse = course
+        map(([course, authors]) => {
+          if(course) {
+            this.currentCourseAuthors = course.authors;
+            this.selectedCourse = {
+              ...course,
+              authors: course.authors.map(author => authors.find(aut => aut.id === author)?.name ?? author)
+            }
+          }
         }),
-        takeUntil(this.destroy$)
+
+      ).subscribe()
+  }
+
+  private getAllAuthors() {
+    this.authorsFacade.authors$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (authors) => this.allAuthors = authors
       )
-      .subscribe()
-  }
-
-  private getAllAuthors(): void {
-    this.authorsStore.authors$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        authors => this.allAuthors = authors
-      );
-  }
-
-  private getAllCourses(): void {
-    this.coursesStore.courses$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        courses => this.allCourses = courses
-      );
   }
 
   submit(): void {
@@ -78,54 +73,48 @@ export class CourseFormComponent implements OnInit, OnDestroy {
       ...this.courseForm.value,
       authors: [...this.currentCourseAuthors]
     }
-    let find = this.allCourses.find(item => item.id === course.id);
-    if(find) {
-      this.coursesStore.editCourse(course)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          () => {
-            this.router.navigate(['/courses']);
-          }
-      );
+    if(this.selectedCourse) {
+      this.coursesFacade.editCourse(course, course.id);
     } else {
       course = {
         ...course,
         duration: Number(this.courseForm.value.duration)
       }
-      this.coursesStore.addCourse(course)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          () => {
-            this.router.navigate(['/courses']);
-          }
-      );
+      this.coursesFacade.createCourse(course);
     }
-
   }
 
-  addAuthor(): void {
+  addedAuthor(): void {
     const author = new FormControl(
       {value: this.courseForm.value.newAuthor, disabled: true}
     );
-    this.authorsStore.addAuthor(author.value)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        aut => this.currentCourseAuthors.push(aut.id)
-      );
+    this.authorsFacade.addAuthor(this.courseForm.value.newAuthor);
+    this.authorsFacade.addedAuthor$
+      .pipe(
+        tap((author) => {
+          if(author) {
+            //this.currentCourseAuthors.push(author.id);
+            this.selectedCourse?.authors.push(author.name);
+          }
+        })
+      ).subscribe()
+    // this.authorsStore.addAuthor(author.value)
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(
+    //     aut => this.currentCourseAuthors.push(aut.id)
+    //   );
     this.authors.push(author);
   }
 
   removeAuthor(index: number): void {
-    this.currentCourseAuthors.splice(index, 1);
+    this.selectedCourse?.authors.splice(index, 1);
     (this.courseForm.get('authors') as FormArray).removeAt(index);
   }
 
   private getAuthors(): FormControl[]  {
-    return this.currentCourseAuthors.map((author) =>  {
+    return this.selectedCourse?.authors.map((author) =>  {
       return new FormControl(
-        {
-          value: this.allAuthors.find(item => item.id === author)?.name, disabled: true
-        },
+        {value: author, disabled: true},
         [Validators.required]
       )
      }
