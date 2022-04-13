@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, mergeMap, Observable, Subject, takeUntil, zip } from 'rxjs';
+import { combineLatest, map, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { AuthStateFacade } from 'src/app/auth/store/auth.facade';
 import { Course } from 'src/app/core/models/course-model.js';
+import { Author } from 'src/app/services/authors.service';
 import { AuthorsStateFacade } from 'src/app/store/authors/authors.facade';
 import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 import { UserStateFacade } from 'src/app/user/store/user.facade';
-import { CoursesStoreService } from '../../services/courses-store.service';
 
 @Component({
   selector: 'app-courses',
@@ -18,14 +18,14 @@ export class CoursesComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject<boolean>();
   username$: Observable<string | null>;
   isAdmin$: Observable<boolean | null>;
-  allCourses$: Observable<Course[] | null>;
+  allCourses: Course[];
+  allAuthors: Author[] = [];
   isConfirmModalOpen: boolean = false;
-  isInfo: boolean = false;
+  isInfo: boolean;
   selectedСourse: Course;
   modalMessage: string;
 
   constructor(
-    private coursesStore: CoursesStoreService,
     private router: Router,
     private userFacade: UserStateFacade,
     private authFacade: AuthStateFacade,
@@ -48,13 +48,8 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   private removeCourse() {
-    this.coursesStore.deleteCourse(this.selectedСourse.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        () => {
-          this.getCourses();
-        }
-      );
+    this.coursesFacade.deleteCourse(this.selectedСourse.id);
+    this.getCourses();
   }
 
   openRemoveModal(course: Course): void {
@@ -72,9 +67,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   openEditForm(course: Course): void {
     this.coursesFacade.getSingleCourse(course.id);
-    setTimeout(() => {
-      this.router.navigate(['/courses/edit/:id']);
-    }, 10);
+    this.router.navigate(['/courses/edit/:id']);
   }
 
   showCourse(course: Course): void {
@@ -84,7 +77,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   addCourse(): void {
     this.isInfo = false;
-    this.router.navigate(['/courses/edit/:id']);
   }
 
   private getUser(): void {
@@ -93,37 +85,29 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   private getCourses(): void {
-    this.allCourses$ = zip([this.coursesFacade.allCourses$, this.authorsFacade.authors$])
+    combineLatest([this.coursesFacade.allCourses$, this.authorsFacade.authors$])
       .pipe(
-        map(([courses, authors]) => courses.map(course => {
+        map(([courses, authors]) => {
+          return courses.map(course => {
             return {
               ...course,
               authors: course.authors.map(author => authors.find(aut => aut.id === author)?.name ?? author)
             }
-          })
-        )
-      )
-
-      // .subscribe(
-      //   courses => {
-      //     this.courses = courses ?? [];
-      //     if(this.courses.length === 0) {
-      //       this.isInfo = true;
-      //     }
-      //   }
-      // );
+          })}
+        ),
+        takeUntil(this.destroy$)
+      ).subscribe(
+        courses => {
+          if(courses.length === 0) {
+            this.isInfo = true
+          }
+          this.allCourses = courses;
+        }
+      );
   }
 
   logout(): void {
     this.authFacade.logout();
-  }
-
-  filter(data: string): void {
-    this.coursesStore.filterCourse(data)
-      // .pipe(takeUntil(this.destroy$))
-      // .subscribe(
-      //   courses => this.courses = courses ?? []
-      // );
   }
 
 }

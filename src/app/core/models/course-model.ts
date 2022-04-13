@@ -4,5 +4,6 @@ export interface Course {
   description: string,
   creationDate: Date,
   duration:  number,
-  authors: string[]
+  authors: string[],
+  authorsName?: string[],
 }

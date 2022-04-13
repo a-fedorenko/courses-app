@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, EMPTY, map, mergeMap, of, tap, zip } from 'rxjs';
+import { catchError, EMPTY, map, mergeMap, of, switchMap, tap, zip } from 'rxjs';
 import { CoursesService } from 'src/app/services/courses.service';
 import { AuthorsStateFacade } from '../authors/authors.facade';
 import { CoursesActions } from './courses.actions';
@@ -50,7 +50,7 @@ export class CoursesEffects {
           map(([{result}, authors]) => {
             let course = {
               ...result,
-              authors: result.authors.map(author => authors.find(aut => aut.id === author)?.name ?? author)
+              authorsName: result.authors.map(author => authors.find(aut => aut.id === author)?.name ?? author)
             }
             return (CoursesActions.requestSingleCourseSuccess({
               course: course
@@ -67,7 +67,15 @@ export class CoursesEffects {
       ofType(CoursesActions.requestDeleteCourse),
       mergeMap(({id}) => this.coursesService.deleteCourse(id)
         .pipe(
-          map(() => (CoursesActions.requestAllCourses())),
+          mergeMap(() => this.coursesService.getAll()
+            .pipe(
+              map(({result}) => {
+                return (CoursesActions.requestAllCoursesSuccess({
+                allCourses: result
+              }))}
+              )
+            )
+          ),
           catchError(error => of(CoursesActions.requestAllCoursesFail({ errorMessage: error })))
         )
       )
@@ -81,8 +89,7 @@ export class CoursesEffects {
         .pipe(
           map(({result}) => (CoursesActions.requestEditCourseSuccess({
             course: result
-          }))
-          ),
+          }))),
           catchError(error => of(CoursesActions.requestEditCourseFail({ errorMessage: error })))
         )
       )
@@ -109,7 +116,7 @@ export class CoursesEffects {
       ofType(
         CoursesActions.requestCreateCourseSuccess,
         CoursesActions.requestEditCourseSuccess,
-        CoursesActions.requestSingleCourseFail,
+        CoursesActions.requestSingleCourseFail
         ),
       tap(() => this.router.navigate(['/courses']))
     ),

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { faPen, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { Course } from 'src/app/core/models/course-model';
-import { CoursesStoreService } from 'src/app/services/courses-store.service';
+import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 
 @Component({
   selector: 'app-course-list',
@@ -12,6 +12,7 @@ import { CoursesStoreService } from 'src/app/services/courses-store.service';
 export class CourseListComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
+  searchingState$: Observable<boolean>;
   iconEdit: unknown = faPen;
   iconDelete: unknown = faTrashAlt;
   showButtonText: string = 'Show course';
@@ -20,17 +21,17 @@ export class CourseListComponent implements OnInit, OnDestroy {
   @Input() courses: Course[] | null;
   @Input() isEdit: boolean | null;
 
-
   @Output() edit: EventEmitter<Course> = new EventEmitter<Course>();
   @Output() delete: EventEmitter<Course> = new EventEmitter<Course>();
   @Output() show: EventEmitter<Course> = new EventEmitter<Course>();
 
 
   constructor(
-    private coursesStore: CoursesStoreService,
+    private coursesFacade: CoursesStateFacade
   ) { }
 
   ngOnInit(): void {
+    this.searchingState$ = this.coursesFacade.isSearchingState$;
   }
 
   ngOnDestroy(): void {
@@ -51,11 +52,13 @@ export class CourseListComponent implements OnInit, OnDestroy {
   }
 
   filter(data: string): void {
-    this.coursesStore.filterCourse(data)
+    this.coursesFacade.getFilteredCourses(data);
+    this.coursesFacade.courses$
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         courses => this.courses = courses ?? []
       );
+    this.searchingState$ = this.coursesFacade.isSearchingState$;
   }
 
 }

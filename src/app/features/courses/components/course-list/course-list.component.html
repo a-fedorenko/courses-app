@@ -1,6 +1,6 @@
-<div class="wrapper">
-  <app-search [placeholder]="'Search course'" (search)="filter($event)">
-  </app-search>
+<app-search [placeholder]="'Search course'" (search)="filter($event)" *ngIf="courses?.length || (searchingState$ | async)">
+</app-search>
+<div *ngIf="courses?.length">
   <app-course-card  *ngFor="let course of courses"
     [title]="course.title"
     [description]="course.description"

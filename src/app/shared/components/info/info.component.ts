@@ -9,6 +9,7 @@ export class InfoComponent implements OnInit {
 
   @Input() title: string;
   @Input() text: string;
+  @Input() isInfo: boolean = false;
 
   constructor() { }
 

@@ -4,22 +4,24 @@
     <app-button [buttonText]="'Logout'" [type]="'button'" (click)="logout()"></app-button>
   </app-header>
 
-  <app-course-list  *ngIf="!isInfo"
-    (delete)="openRemoveModal($event)"
-    (edit)="openEditForm($event)"
-    (show)="showCourse($event)"
-    [courses]="allCourses$ | async"
-    [isEdit]="isAdmin$ | async"
-  >
-  </app-course-list>
+  <div class="wrapper">
+    <app-course-list
+      (delete)="openRemoveModal($event)"
+      (edit)="openEditForm($event)"
+      (show)="showCourse($event)"
+      [courses]="allCourses"
+      [isEdit]="isAdmin$ | async"
+      >
+    </app-course-list>
 
-
-  <app-info *ngIf="isInfo"
-    [title]="'Your list is empty'"
-    [text]="'Please use the button \'Add new course\' to add your first course'"
-  >
-    <app-button [buttonText]="'Add new course'" [type]="'button'" (click)="addCourse()"></app-button>
-  </app-info>
+    <app-info
+      [isInfo]="!allCourses.length"
+      [title]="'Your list is empty'"
+      [text]="'Please use the button \'Add new course\' to add your first course'"
+    >
+      <app-button [buttonText]="'Add new course'" [type]="'button'" (click)="addCourse()" routerLink="/courses/edit/:id"></app-button>
+    </app-info>
+</div>
 
 </div>
 

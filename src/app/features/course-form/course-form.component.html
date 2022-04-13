@@ -13,11 +13,6 @@
           <h3>Add authors</h3>
           <label for="newAuthor">Author name</label>
           <div class="flex_block">
-            <!-- <select formControlName="newAuthor" class="author_name">
-              <option *ngFor="let author of allAuthors" [ngValue]="author">
-                {{ author.name }}
-              </option>
-            </select> -->
             <input type="text" name="newAuthor" formControlName="newAuthor" class="author_name">
             <app-button [buttonText]="'Create author'" type="button" (click)="addedAuthor()"></app-button>
           </div>
